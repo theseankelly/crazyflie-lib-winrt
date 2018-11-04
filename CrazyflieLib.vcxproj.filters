@@ -11,15 +11,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Class.cpp" />
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="Crazyflie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Class.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Midl Include="Class.idl" />
+    <ClInclude Include="Crazyflie.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CrazyflieLib.def" />
@@ -27,5 +24,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="Crazyflie.idl" />
   </ItemGroup>
 </Project>

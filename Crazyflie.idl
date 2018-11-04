@@ -1,0 +1,9 @@
+namespace bitcraze.crazyflielib
+{
+    [default_interface]
+    runtimeclass Crazyflie
+    {
+        Crazyflie();
+        Int32 MyProperty;
+    }
+}

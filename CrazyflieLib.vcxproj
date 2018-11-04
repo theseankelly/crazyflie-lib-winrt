@@ -6,7 +6,7 @@
     <MinimalCoreWin>true</MinimalCoreWin>
     <ProjectGuid>{c5285672-c15d-443a-a50c-d122c7e14461}</ProjectGuid>
     <ProjectName>CrazyflieLib</ProjectName>
-    <RootNamespace>CrazyflieLib</RootNamespace>
+    <RootNamespace>bitcraze.crazyflielib</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>
@@ -96,21 +96,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Class.h">
-      <DependentUpon>Class.idl</DependentUpon>
+    <ClInclude Include="Crazyflie.h">
+      <DependentUpon>Crazyflie.idl</DependentUpon>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Class.cpp">
-      <DependentUpon>Class.idl</DependentUpon>
+    <ClCompile Include="Crazyflie.cpp">
+      <DependentUpon>Crazyflie.idl</DependentUpon>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="Class.idl" />
+    <Midl Include="Crazyflie.idl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CrazyflieLib.def" />
