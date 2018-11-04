@@ -117,7 +117,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="readme.txt">
+    <Text Include="README.md">
       <DeploymentContent>false</DeploymentContent>
     </Text>
   </ItemGroup>
