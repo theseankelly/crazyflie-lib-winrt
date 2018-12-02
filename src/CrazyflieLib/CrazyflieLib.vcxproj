@@ -95,12 +95,14 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BthDevice.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Crazyflie.h">
       <DependentUpon>Crazyflie.idl</DependentUpon>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BthDevice.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

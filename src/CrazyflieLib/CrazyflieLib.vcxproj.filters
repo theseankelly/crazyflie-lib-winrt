@@ -13,10 +13,12 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
     <ClCompile Include="Crazyflie.cpp" />
+    <ClCompile Include="BthDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Crazyflie.h" />
+    <ClInclude Include="BthDevice.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CrazyflieLib.def" />

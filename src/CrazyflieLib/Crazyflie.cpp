@@ -1,15 +1,28 @@
 ﻿#include "pch.h"
 #include "Crazyflie.h"
+#include "BthDevice.h"
+
+using namespace winrt::Windows::Foundation;
+using namespace winrt::Windows::Foundation::Collections;
 
 namespace winrt::bitcraze::crazyflielib::implementation
 {
-    int32_t Crazyflie::MyProperty()
+    IAsyncOperation<IVector<winrt::hstring>>
+    Crazyflie::ScanInterfacesAsync()
     {
-        throw hresult_not_implemented();
+        return BthDevice::ScanInterfacesAsync();
     }
 
-    void Crazyflie::MyProperty(int32_t /* value */)
+    Crazyflie::Crazyflie(winrt::hstring device_name)
+        : device_name_(device_name)
+    { }
+
+    IAsyncAction
+    Crazyflie::ConnectAsync()
     {
-        throw hresult_not_implemented();
+        this->bluetooth_device_ =
+            std::make_shared<BthDevice>(this->device_name_);
+
+        return this->bluetooth_device_->ConnectAsync();
     }
 }

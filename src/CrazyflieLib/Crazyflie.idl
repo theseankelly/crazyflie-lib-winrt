@@ -3,7 +3,24 @@ namespace bitcraze.crazyflielib
     [default_interface]
     runtimeclass Crazyflie
     {
-        Crazyflie();
-        Int32 MyProperty;
+        //
+        // Summary:
+        //      Creates an instance of a Crazyflie with the given deviceId.
+        //      Device ID can be retrieved with ScanInterfacesAsync.
+        Crazyflie(String deviceId);
+
+        //
+        // Summary:
+        //      Initiates connection to the Crazyflie asynchronously.
+        Windows.Foundation.IAsyncAction
+        ConnectAsync();
+
+        //
+        // Summary:
+        //      Asynchronously searches for Crazyflie devices across all
+        //      available interfaces.
+        static Windows.Foundation.IAsyncOperation<
+            Windows.Foundation.Collections.IVector<String> >
+            ScanInterfacesAsync();
     }
 }

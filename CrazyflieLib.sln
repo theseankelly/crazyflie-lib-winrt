@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CrazyflieLib", "src\CrazyflieLib\CrazyflieLib.vcxproj", "{C5285672-C15D-443A-A50C-D122C7E14461}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrazyflieLibTest", "test\CrazyflieLibTest\CrazyflieLibTest.csproj", "{42B6F471-6099-4CBD-8498-D06E3B248778}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -27,6 +29,24 @@ Global
 		{C5285672-C15D-443A-A50C-D122C7E14461}.Release|x64.Build.0 = Release|x64
 		{C5285672-C15D-443A-A50C-D122C7E14461}.Release|x86.ActiveCfg = Release|Win32
 		{C5285672-C15D-443A-A50C-D122C7E14461}.Release|x86.Build.0 = Release|Win32
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Debug|ARM.ActiveCfg = Debug|ARM
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Debug|ARM.Build.0 = Debug|ARM
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Debug|ARM.Deploy.0 = Debug|ARM
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Debug|x64.ActiveCfg = Debug|x64
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Debug|x64.Build.0 = Debug|x64
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Debug|x64.Deploy.0 = Debug|x64
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Debug|x86.ActiveCfg = Debug|x86
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Debug|x86.Build.0 = Debug|x86
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Debug|x86.Deploy.0 = Debug|x86
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Release|ARM.ActiveCfg = Release|ARM
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Release|ARM.Build.0 = Release|ARM
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Release|ARM.Deploy.0 = Release|ARM
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Release|x64.ActiveCfg = Release|x64
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Release|x64.Build.0 = Release|x64
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Release|x64.Deploy.0 = Release|x64
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Release|x86.ActiveCfg = Release|x86
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Release|x86.Build.0 = Release|x86
+		{42B6F471-6099-4CBD-8498-D06E3B248778}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
