@@ -15,6 +15,13 @@ namespace bitcraze.crazyflielib
         Windows.Foundation.IAsyncAction
         ConnectAsync();
 
+        Windows.Foundation.IAsyncOperation<Boolean>
+        SendCommanderPacketAsync(
+            Single roll,
+            Single pitch,
+            Single yaw,
+            Single thrust);
+
         //
         // Summary:
         //      Asynchronously searches for Crazyflie devices across all

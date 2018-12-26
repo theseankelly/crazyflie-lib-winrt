@@ -19,6 +19,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Crazyflie.h" />
     <ClInclude Include="BthDevice.h" />
+    <ClInclude Include="crtp.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CrazyflieLib.def" />

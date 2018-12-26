@@ -30,6 +30,16 @@ namespace winrt::bitcraze::crazyflielib::implementation
         ConnectAsync();
 
         /**
+         * Asynchronously sends basic commander packet
+         */
+        IAsyncOperation<bool>
+        SendCommanderPacketAsync(
+            float roll,
+            float pitch,
+            float yaw,
+            float thrust);
+
+        /**
          * Asynchronously scans all supported interfaces for
          * available Crazyflie devices.
          *

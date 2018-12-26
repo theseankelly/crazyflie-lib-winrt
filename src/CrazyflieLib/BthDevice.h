@@ -1,10 +1,12 @@
 #pragma once
 #include "pch.h"
+#include "crtp.h"
 
 using namespace winrt::Windows::Devices::Bluetooth;
 using namespace winrt::Windows::Devices::Bluetooth::GenericAttributeProfile;
 using namespace winrt::Windows::Foundation;
 using namespace winrt::Windows::Foundation::Collections;
+using namespace winrt::Windows::Storage::Streams;
 
 namespace winrt::bitcraze::crazyflielib::implementation
 {
@@ -43,6 +45,10 @@ namespace winrt::bitcraze::crazyflielib::implementation
          *       success.
          */
         IAsyncAction ConnectAsync();
+
+        IAsyncOperation<bool> SendAsync(
+            CrtpPort port_id,
+            IBuffer data);
 
     protected:
         winrt::hstring device_name_;

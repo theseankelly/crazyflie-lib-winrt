@@ -5,10 +5,10 @@
 
 #pragma once
 
-// Remove this? Only for messing around with GLE
 #include <Windows.h>
 
 // STL includes
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -19,4 +19,5 @@
 #include "winrt/Windows.Devices.Bluetooth.h"
 #include "winrt/Windows.Devices.Bluetooth.GenericAttributeProfile.h"
 #include "winrt/Windows.Devices.Enumeration.h"
+#include "winrt/Windows.Storage.Streams.h"
 

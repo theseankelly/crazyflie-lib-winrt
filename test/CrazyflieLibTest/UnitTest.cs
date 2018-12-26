@@ -42,5 +42,23 @@ namespace CrazyflieLibTest
                 await c.ConnectAsync();
             }).GetAwaiter().GetResult();
         }
+
+        [TestMethod]
+        public void SendSetpointTest()
+        {
+            // Connect to the first available device. Should not throw.
+            IList<string> devices = null;
+            System.Threading.Tasks.Task.Run(async () =>
+            {
+                devices = await Crazyflie.ScanInterfacesAsync();
+                Crazyflie c = new Crazyflie(devices[0]);
+                await c.ConnectAsync();
+
+                bool ret = await c.SendCommanderPacketAsync(0, 0, 0, 0);
+                Assert.IsTrue(ret);
+                ret = await c.SendCommanderPacketAsync(0, 0, 0, 1000);
+                Assert.IsTrue(ret);
+            }).GetAwaiter().GetResult();
+        }
     }
  }

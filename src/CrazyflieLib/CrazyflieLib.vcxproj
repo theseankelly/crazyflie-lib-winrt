@@ -96,6 +96,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BthDevice.h" />
+    <ClInclude Include="crtp.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Crazyflie.h">
       <DependentUpon>Crazyflie.idl</DependentUpon>

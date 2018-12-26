@@ -7,6 +7,7 @@ using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::Devices::Enumeration;
 using namespace winrt::Windows::Devices::Bluetooth;
 using namespace winrt::Windows::Devices::Bluetooth::GenericAttributeProfile;
+using namespace winrt::Windows::Storage::Streams;
 
 namespace winrt::bitcraze::crazyflielib::implementation
 {
@@ -161,5 +162,28 @@ namespace winrt::bitcraze::crazyflielib::implementation
                 L"Failed to get handle to the CRTPDOWN characteristic"
             );
         }
+    }
+
+    IAsyncOperation<bool>
+    BthDevice::SendAsync(
+        CrtpPort port_id,
+        IBuffer data)
+    {
+        DataWriter packet;
+        CrtpHeader hdr =
+        {
+            0,
+            0,
+            static_cast<std::uint8_t>(port_id)
+        };
+
+        packet.WriteByte(hdr.as_byte);
+        packet.WriteBuffer(data);
+
+        auto res = co_await this->crtpUpCharacteristic_->WriteValueAsync(
+            packet.DetachBuffer(),
+            GattWriteOption::WriteWithResponse);
+
+        return (res == GattCommunicationStatus::Success);
     }
 }
