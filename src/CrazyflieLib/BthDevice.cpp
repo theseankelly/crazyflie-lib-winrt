@@ -180,7 +180,7 @@ namespace winrt::bitcraze::crazyflielib::implementation
         packet.WriteByte(hdr.as_byte);
         packet.WriteBuffer(data);
 
-        auto res = co_await this->crtpUpCharacteristic_->WriteValueAsync(
+        auto res = co_await this->crtpCharacteristic_->WriteValueAsync(
             packet.DetachBuffer(),
             GattWriteOption::WriteWithResponse);
 
