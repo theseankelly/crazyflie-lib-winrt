@@ -56,7 +56,7 @@ namespace CrazyflieLibTest
 
                 bool ret = await c.SendCommanderPacketAsync(0, 0, 0, 0);
                 Assert.IsTrue(ret);
-                ret = await c.SendCommanderPacketAsync(0, 0, 0, 1000);
+                ret = await c.SendCommanderPacketAsync(0, 0, 0, 0.1f);
                 Assert.IsTrue(ret);
             }).GetAwaiter().GetResult();
         }

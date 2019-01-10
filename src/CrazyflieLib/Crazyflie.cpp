@@ -34,6 +34,13 @@ namespace winrt::bitcraze::crazyflielib::implementation
         float yaw,
         float thrust)
     {
+        if ((thrust < 0) || thrust > 1)
+        {
+            throw winrt::hresult_error(
+                E_INVALIDARG,
+                L"Thrust value must be a percentage between 0 and 1");
+        }
+
         DataWriter payload;
         payload.WriteSingle(roll);
         payload.WriteSingle(pitch);
