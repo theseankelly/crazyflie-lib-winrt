@@ -34,6 +34,27 @@ namespace winrt::bitcraze::crazyflielib::implementation
         float yaw,
         float thrust)
     {
+        if ((roll < -1) || roll > 1)
+        {
+            throw winrt::hresult_error(
+                E_INVALIDARG,
+                L"Roll value must be a percentage between -1 and 1");
+        }
+
+        if ((pitch < -1) || pitch > 1)
+        {
+            throw winrt::hresult_error(
+                E_INVALIDARG,
+                L"Pitch value must be a percentage between -1 and 1");
+        }
+
+        if ((yaw < -1) || yaw > 1)
+        {
+            throw winrt::hresult_error(
+                E_INVALIDARG,
+                L"Yaw value must be a percentage between -1 and 1");
+        }
+
         if ((thrust < 0) || thrust > 1)
         {
             throw winrt::hresult_error(
@@ -42,10 +63,11 @@ namespace winrt::bitcraze::crazyflielib::implementation
         }
 
         DataWriter payload;
-        payload.WriteSingle(roll);
-        payload.WriteSingle(pitch);
-        payload.WriteSingle(yaw);
-        payload.WriteUInt16(static_cast<std::uint16_t>(thrust * UINT16_MAX));
+        payload.ByteOrder(ByteOrder::LittleEndian);
+        payload.WriteSingle(roll * Crazyflie::MAX_ROLL);
+        payload.WriteSingle(pitch * Crazyflie::MAX_PITCH);
+        payload.WriteSingle(yaw * Crazyflie::MAX_YAW);
+        payload.WriteUInt16(static_cast<std::uint16_t>(thrust * Crazyflie::MAX_THRUST));
 
         return this->bluetooth_device_->SendAsync(
             CrtpPort::Commander, payload.DetachBuffer());

@@ -50,6 +50,11 @@ namespace winrt::bitcraze::crazyflielib::implementation
         ScanInterfacesAsync();
 
     private:
+        static constexpr float MAX_ROLL = 30;
+        static constexpr float MAX_PITCH = 30;
+        static constexpr float MAX_YAW = 200;
+        static constexpr std::uint16_t MAX_THRUST = UINT16_MAX;
+
         winrt::hstring device_name_;
         std::shared_ptr<BthDevice> bluetooth_device_;
     };
