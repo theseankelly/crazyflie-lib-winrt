@@ -72,4 +72,23 @@ namespace winrt::bitcraze::crazyflielib::implementation
         return this->bluetooth_device_->SendAsync(
             CrtpPort::Commander, payload.DetachBuffer());
     }
+
+    IAsyncOperation<bool>
+    Crazyflie::SendCommanderHoverPacketAsync(
+        float vx,
+        float vy,
+        float yawrate,
+        float zdist)
+    {
+        DataWriter payload;
+        payload.ByteOrder(ByteOrder::LittleEndian);
+        payload.WriteByte(0x05); // Hover ID
+        payload.WriteSingle(vx);
+        payload.WriteSingle(vy);
+        payload.WriteSingle(yawrate);
+        payload.WriteSingle(zdist);
+
+        return this->bluetooth_device_->SendAsync(
+            CrtpPort::SetpointGeneric, payload.DetachBuffer());
+    }
 }

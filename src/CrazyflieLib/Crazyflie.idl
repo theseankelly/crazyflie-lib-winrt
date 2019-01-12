@@ -15,12 +15,25 @@ namespace bitcraze.crazyflielib
         Windows.Foundation.IAsyncAction
         ConnectAsync();
 
+        //
+        // Summary:
+        //      Sends a legacy RPYT setpoint to the Crazyflie.
         Windows.Foundation.IAsyncOperation<Boolean>
         SendCommanderPacketAsync(
             Single roll,
             Single pitch,
             Single yaw,
             Single thrust);
+
+        //
+        // Summary:
+        //      Sends a hover setpoint to the Crazyflie.
+        Windows.Foundation.IAsyncOperation<Boolean>
+        SendCommanderHoverPacketAsync(
+            Single vx,
+            Single vy,
+            Single yawrate,
+            Single zdist);
 
         //
         // Summary:

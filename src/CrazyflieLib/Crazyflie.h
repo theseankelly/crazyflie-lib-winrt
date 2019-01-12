@@ -30,7 +30,15 @@ namespace winrt::bitcraze::crazyflielib::implementation
         ConnectAsync();
 
         /**
-         * Asynchronously sends basic commander packet
+         * Asynchronously sends basic RPYT commander packet
+         *
+         * @param roll Signed percent (-1,1) to apply on the roll axis
+         *
+         * @param pitch Signed percent (-1,1) to apply on the pitch axis
+         *
+         * @param yaw Signed percent (-1,1) to apply on the yaw axis
+         *
+         * @param thrust Unsigned percent (0,1) to apply on the thrust axis
          */
         IAsyncOperation<bool>
         SendCommanderPacketAsync(
@@ -38,6 +46,24 @@ namespace winrt::bitcraze::crazyflielib::implementation
             float pitch,
             float yaw,
             float thrust);
+
+        /**
+         * Asynchronously sends hover setpoint packet
+         *
+         * @param roll Signed percent (-1,1) to apply on the roll axis
+         *
+         * @param pitch Signed percent (-1,1) to apply on the pitch axis
+         *
+         * @param yaw Signed percent (-1,1) to apply on the yaw axis
+         *
+         * @param thrust Unsigned percent (0,1) to apply on the thrust axis
+         */
+        IAsyncOperation<bool>
+        SendCommanderHoverPacketAsync(
+            float vx,
+            float vy,
+            float yawrate,
+            float zdist);
 
         /**
          * Asynchronously scans all supported interfaces for
