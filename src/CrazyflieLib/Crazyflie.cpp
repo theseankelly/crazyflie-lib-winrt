@@ -91,4 +91,15 @@ namespace winrt::bitcraze::crazyflielib::implementation
         return this->bluetooth_device_->SendAsync(
             CrtpPort::SetpointGeneric, payload.DetachBuffer());
     }
+
+    IAsyncOperation<bool>
+    Crazyflie::SendCommanderStopPacketAsync()
+    {
+        DataWriter payload;
+        payload.ByteOrder(ByteOrder::LittleEndian);
+        payload.WriteByte(0x00); // Stop ID
+
+        return this->bluetooth_device_->SendAsync(
+            CrtpPort::SetpointGeneric, payload.DetachBuffer());
+    }
 }

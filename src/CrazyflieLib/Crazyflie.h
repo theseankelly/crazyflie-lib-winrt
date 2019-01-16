@@ -66,6 +66,12 @@ namespace winrt::bitcraze::crazyflielib::implementation
             float zdist);
 
         /**
+         * Asynchronously sends stop setpoint packet
+         */
+        IAsyncOperation<bool>
+        SendCommanderStopPacketAsync();
+
+        /**
          * Asynchronously scans all supported interfaces for
          * available Crazyflie devices.
          *

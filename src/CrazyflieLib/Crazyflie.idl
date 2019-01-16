@@ -37,6 +37,12 @@ namespace bitcraze.crazyflielib
 
         //
         // Summary:
+        //      Sends a stop setpoint to the Crazyflie.
+        Windows.Foundation.IAsyncOperation<Boolean>
+        SendCommanderStopPacketAsync();
+
+        //
+        // Summary:
         //      Asynchronously searches for Crazyflie devices across all
         //      available interfaces.
         static Windows.Foundation.IAsyncOperation<
