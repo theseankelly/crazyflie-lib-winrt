@@ -34,27 +34,29 @@ namespace winrt::bitcraze::crazyflielib::implementation
         // as the primary selector, but first query for and return the device
         // ID string, not the service ID string.
 
-        std::vector<winrt::hstring> requestedProperties;
-        requestedProperties.push_back(L"System.Devices.AepService.AepId");
-
-        Windows::Foundation::Collections::IVector<winrt::hstring> props =
+        // AepId is necessary to obtain the Device ID
+        Windows::Foundation::Collections::IVector<winrt::hstring> props
+        {
             winrt::single_threaded_vector<winrt::hstring>(
-                std::move(requestedProperties));
+                {L"System.Devices.AepService.AepId"})
+        };
 
         DeviceInformationCollection services
         {
             co_await DeviceInformation::FindAllAsync(
-                GattDeviceService::GetDeviceSelectorFromUuid(
-                    crazyflieServiceGuid), props)
+                GattDeviceService::GetDeviceSelectorFromUuid(crazyflieServiceGuid), props)
         };
 
+        // Build a list of device IDs from the returned GATT services
         std::vector<winrt::hstring> deviceIds;
         for (auto const& service : services)
         {
-            winrt::hstring aepId =
+            winrt::hstring aepId
+            {
                 winrt::unbox_value<winrt::hstring>(
                     service.Properties().Lookup(
-                        L"System.Devices.AepService.AepId"));
+                        L"System.Devices.AepService.AepId"))
+            };
 
             DeviceInformation device
             {
@@ -63,8 +65,8 @@ namespace winrt::bitcraze::crazyflielib::implementation
 
             deviceIds.push_back(device.Id());
         }
-        return winrt::single_threaded_observable_vector<winrt::hstring>(
-            std::move(deviceIds));
+
+        return winrt::single_threaded_observable_vector<winrt::hstring>(std::move(deviceIds));
     }
 
     BthDevice::BthDevice(winrt::hstring device_name)
