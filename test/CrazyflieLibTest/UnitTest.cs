@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Devices.Enumeration;
+using Windows.Devices.Radios;
 using bitcraze.crazyflielib;
 
 namespace CrazyflieLibTest
@@ -31,33 +32,50 @@ namespace CrazyflieLibTest
         }
 
         [TestMethod]
-        public void ConnectTest()
+        public void InitializeTest()
         {
-            // Connect to the first available device. Should not throw.
             IList<string> devices = null;
             System.Threading.Tasks.Task.Run(async () =>
             {
                 devices = await Crazyflie.ScanInterfacesAsync();
+                Assert.IsTrue(devices.Count >= 1);
                 Crazyflie c = new Crazyflie(devices[0]);
-                await c.ConnectAsync();
+                CrazyflieStatus status = await c.InitializeAsync();
+                Assert.IsTrue(status == CrazyflieStatus.Success);
             }).GetAwaiter().GetResult();
         }
 
         [TestMethod]
         public void SendSetpointTest()
         {
-            // Connect to the first available device. Should not throw.
             IList<string> devices = null;
             System.Threading.Tasks.Task.Run(async () =>
             {
                 devices = await Crazyflie.ScanInterfacesAsync();
+                Assert.IsTrue(devices.Count >= 1);
                 Crazyflie c = new Crazyflie(devices[0]);
-                await c.ConnectAsync();
+                CrazyflieStatus status = await c.InitializeAsync();
+                Assert.IsTrue(status == CrazyflieStatus.Success);
 
-                bool ret = await c.SendCommanderPacketAsync(0, 0, 0, 0);
-                Assert.IsTrue(ret);
-                ret = await c.SendCommanderPacketAsync(0, 0, 0, 0.1f);
-                Assert.IsTrue(ret);
+                status = await c.SendCommanderPacketAsync(0, 0, 0, 0);
+                Assert.IsTrue(status == CrazyflieStatus.Success);
+                status = await c.SendCommanderPacketAsync(0, 0, 0, 0.1f);
+                Assert.IsTrue(status == CrazyflieStatus.Success);
+            }).GetAwaiter().GetResult();
+        }
+    }
+
+    [TestClass]
+    public class NegativeTests
+    {
+        [TestMethod]
+        public void ConnectToInvalidBluetoothID()
+        {
+            System.Threading.Tasks.Task.Run(async () =>
+            {
+                Crazyflie c = new Crazyflie("BluetoothLE#BluetoothLE00:00:00:00:00:00-00:00:00:00:00:00");
+                CrazyflieStatus status = await c.InitializeAsync();
+                Assert.IsTrue(status == CrazyflieStatus.InvalidDeviceId);
             }).GetAwaiter().GetResult();
         }
     }

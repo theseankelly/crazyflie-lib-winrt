@@ -1,5 +1,15 @@
 namespace bitcraze.crazyflielib
 {
+    enum CrazyflieStatus
+    {
+        Success                   = 0,
+        Failure                   = 1,
+        DeviceUnreachable         = 2,
+        InvalidDeviceId           = 3,
+        BthServiceNotFound        = 4,
+        BthCharacteristicNotFound = 5,
+    };
+
     [default_interface]
     runtimeclass Crazyflie
     {
@@ -11,14 +21,14 @@ namespace bitcraze.crazyflielib
 
         //
         // Summary:
-        //      Initiates connection to the Crazyflie asynchronously.
-        Windows.Foundation.IAsyncAction
-        ConnectAsync();
+        //      Initializes connection to the Crazyflie asynchronously.
+        Windows.Foundation.IAsyncOperation<CrazyflieStatus>
+        InitializeAsync();
 
         //
         // Summary:
         //      Sends a legacy RPYT setpoint to the Crazyflie.
-        Windows.Foundation.IAsyncOperation<Boolean>
+        Windows.Foundation.IAsyncOperation<CrazyflieStatus>
         SendCommanderPacketAsync(
             Single roll,
             Single pitch,
@@ -28,7 +38,7 @@ namespace bitcraze.crazyflielib
         //
         // Summary:
         //      Sends a hover setpoint to the Crazyflie.
-        Windows.Foundation.IAsyncOperation<Boolean>
+        Windows.Foundation.IAsyncOperation<CrazyflieStatus>
         SendCommanderHoverPacketAsync(
             Single vx,
             Single vy,
@@ -38,7 +48,7 @@ namespace bitcraze.crazyflielib
         //
         // Summary:
         //      Sends a stop setpoint to the Crazyflie.
-        Windows.Foundation.IAsyncOperation<Boolean>
+        Windows.Foundation.IAsyncOperation<CrazyflieStatus>
         SendCommanderStopPacketAsync();
 
         //
@@ -48,5 +58,7 @@ namespace bitcraze.crazyflielib
         static Windows.Foundation.IAsyncOperation<
             Windows.Foundation.Collections.IVector<String> >
             ScanInterfacesAsync();
-    }
+    };
+
 }
+

@@ -12,10 +12,22 @@ namespace winrt::bitcraze::crazyflielib::implementation
         Memory = 4,
         Log = 5,
         Localization = 6,
-        SetpointGeneric = 7,
-        SetpointHighLevel = 8,
+        GenericSetpoint = 7,
+        HighLevelSetpoint= 8,
         Platform = 13,
         LinkLayer = 15
+    };
+
+    enum class CrtpGenericSetpointId : std::uint8_t
+    {
+        Stop = 0,
+        VelocityWorld = 1,
+        ZDistance = 2,
+        CPPMEmulation = 3,
+        AltitudeHold = 4,
+        Hover = 5,
+        FullState = 6,
+        Position = 7
     };
 
     union CrtpHeader
@@ -31,4 +43,3 @@ namespace winrt::bitcraze::crazyflielib::implementation
 
     static_assert(sizeof(CrtpHeader) == 1);
 }
- 

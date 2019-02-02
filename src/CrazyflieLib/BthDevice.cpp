@@ -73,100 +73,96 @@ namespace winrt::bitcraze::crazyflielib::implementation
         : device_name_(device_name)
     { }
 
-    IAsyncAction BthDevice::ConnectAsync()
+    IAsyncOperation<CrazyflieStatus> BthDevice::InitializeAsync()
     {
-        this->device_ =
-            std::make_shared<BluetoothLEDevice>(
-                co_await BluetoothLEDevice::FromIdAsync(device_name_));
-
-        // Allow use of cached mode for querying the services/attributes.
-        // In the event the device is not physically present, this call
-        // (ConnectAsync) may still complete successfully, but subsequent
-        // reads/writes to characteristics will fail.
-        auto getServResults =
-            co_await this->device_->GetGattServicesAsync();
-
-        if (getServResults.Status() != GattCommunicationStatus::Success)
+        if (this->initialized_)
         {
-            throw winrt::hresult_error(
-                HRESULT_FROM_WIN32(ERROR_DEVICE_NOT_AVAILABLE),
-                L"Connection to Crazyflie failed. Is it powered on?");
+            co_return CrazyflieStatus::Success;
         }
 
-        for (auto const& s : getServResults.Services())
+        // BluetoothLEDevice::FromIdAsync throws E_INVALIDARG for invalid
+        // device name strings.
+        BluetoothLEDevice device = nullptr;
+        try
         {
-            if (s.Uuid() == crazyflieServiceGuid)
+            device = co_await BluetoothLEDevice::FromIdAsync(device_name_);
+        }
+        catch (winrt::hresult_error const& ex)
+        {
+            HRESULT hr = ex.to_abi();
+            if (hr == E_INVALIDARG)
             {
-                this->crazyflieService_ =
-                    std::make_shared<GattDeviceService>(s);
+                return CrazyflieStatus::InvalidDeviceId;
+            }
+            else
+            {
+                return CrazyflieStatus::Failure;
             }
         }
 
-        if (!this->crazyflieService_)
+        // CRTP Service
+        GattDeviceServicesResult serviceResults =
+            co_await device.GetGattServicesForUuidAsync(crazyflieServiceGuid);
+        if ((serviceResults.Status() == GattCommunicationStatus::Success) &&
+            (serviceResults.Services().Size() == 1))
         {
-            throw winrt::hresult_error(
-                E_BLUETOOTH_ATT_ATTRIBUTE_NOT_FOUND,
-                L"Failed to get handle to the Crazyflie service"
-            );
-        }
-
-        // Again allowing reading from the cache.
-        auto getCharResults =
-            co_await this->crazyflieService_->GetCharacteristicsAsync();
-
-        if (getCharResults.Status() != GattCommunicationStatus::Success)
-        {
-            throw winrt::hresult_error(
-                HRESULT_FROM_WIN32(ERROR_DEVICE_NOT_AVAILABLE),
-                L"Connection to Crazyflie failed. Is it powered on?");
-        }
-
-        for (auto const& c : getCharResults.Characteristics())
-        {
-            if (c.Uuid() == crtpCharacteristicGuid)
+            // CRTP Characteristic
+            auto crazyflieService = serviceResults.Services().GetAt(0);
+            GattCharacteristicsResult characteristicResults =
+                co_await crazyflieService.GetCharacteristicsForUuidAsync(crtpCharacteristicGuid);
+            if ((characteristicResults.Status() == GattCommunicationStatus::Success) &&
+                (characteristicResults.Characteristics().Size()  == 1))
             {
                 this->crtpCharacteristic_ =
-                    std::make_shared<GattCharacteristic>(c);
+                    std::make_shared<GattCharacteristic>(
+                        characteristicResults.Characteristics().GetAt(0));
             }
-            else if (c.Uuid() == crtpUpCharacteristicGuid)
+            else
+            {
+                co_return CrazyflieStatus::BthCharacteristicNotFound;
+            }
+
+            // CRTPUP Characteristic
+            characteristicResults =
+                co_await crazyflieService.GetCharacteristicsForUuidAsync(crtpUpCharacteristicGuid);
+            if ((characteristicResults.Status() == GattCommunicationStatus::Success) &&
+                (characteristicResults.Characteristics().Size()  == 1))
             {
                 this->crtpUpCharacteristic_ =
-                    std::make_shared<GattCharacteristic>(c);
+                    std::make_shared<GattCharacteristic>(
+                        characteristicResults.Characteristics().GetAt(0));
             }
-            else if (c.Uuid() == crtpDownCharacteristicGuid)
+            else
+            {
+                co_return CrazyflieStatus::BthCharacteristicNotFound;
+            }
+
+            // CRTPDOWN Characteristic
+            characteristicResults =
+                co_await crazyflieService.GetCharacteristicsForUuidAsync(crtpDownCharacteristicGuid);
+            if ((characteristicResults.Status() == GattCommunicationStatus::Success) &&
+                (characteristicResults.Characteristics().Size()  == 1))
             {
                 this->crtpDownCharacteristic_ =
-                    std::make_shared<GattCharacteristic>(c);
+                    std::make_shared<GattCharacteristic>(
+                        characteristicResults.Characteristics().GetAt(0));
+            }
+            else
+            {
+                co_return CrazyflieStatus::BthCharacteristicNotFound;
             }
         }
-
-        // Verify that all three characteristics were found
-        if (!this->crtpCharacteristic_)
+        else
         {
-            throw winrt::hresult_error(
-                E_BLUETOOTH_ATT_ATTRIBUTE_NOT_FOUND,
-                L"Failed to get handle to the CRTP characteristic"
-            );
+            co_return CrazyflieStatus::BthServiceNotFound;
         }
 
-        if (!this->crtpUpCharacteristic_)
-        {
-            throw winrt::hresult_error(
-                E_BLUETOOTH_ATT_ATTRIBUTE_NOT_FOUND,
-                L"Failed to get handle to the CRTPUP characteristic"
-            );
-        }
-
-        if (!this->crtpDownCharacteristic_)
-        {
-            throw winrt::hresult_error(
-                E_BLUETOOTH_ATT_ATTRIBUTE_NOT_FOUND,
-                L"Failed to get handle to the CRTPDOWN characteristic"
-            );
-        }
+        // If we got this far, initialization was a success.
+        this->initialized_ = true;
+        return CrazyflieStatus::Success;
     }
 
-    IAsyncOperation<bool>
+    IAsyncOperation<CrazyflieStatus>
     BthDevice::SendAsync(
         CrtpPort port_id,
         IBuffer data)
@@ -186,6 +182,7 @@ namespace winrt::bitcraze::crazyflielib::implementation
             packet.DetachBuffer(),
             GattWriteOption::WriteWithResponse);
 
-        return (res == GattCommunicationStatus::Success);
+        return (res == GattCommunicationStatus::Success) ?
+            CrazyflieStatus::Success : CrazyflieStatus::DeviceUnreachable;
     }
 }

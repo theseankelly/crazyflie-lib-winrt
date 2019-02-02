@@ -18,16 +18,16 @@ namespace winrt::bitcraze::crazyflielib::implementation
         : device_name_(device_name)
     { }
 
-    IAsyncAction
-    Crazyflie::ConnectAsync()
+    IAsyncOperation<CrazyflieStatus>
+    Crazyflie::InitializeAsync()
     {
         this->bluetooth_device_ =
             std::make_shared<BthDevice>(this->device_name_);
 
-        return this->bluetooth_device_->ConnectAsync();
+        return this->bluetooth_device_->InitializeAsync();
     }
 
-    IAsyncOperation<bool>
+    IAsyncOperation<CrazyflieStatus>
     Crazyflie::SendCommanderPacketAsync(
         float roll,
         float pitch,
@@ -73,7 +73,7 @@ namespace winrt::bitcraze::crazyflielib::implementation
             CrtpPort::Commander, payload.DetachBuffer());
     }
 
-    IAsyncOperation<bool>
+    IAsyncOperation<CrazyflieStatus>
     Crazyflie::SendCommanderHoverPacketAsync(
         float vx,
         float vy,
@@ -82,24 +82,24 @@ namespace winrt::bitcraze::crazyflielib::implementation
     {
         DataWriter payload;
         payload.ByteOrder(ByteOrder::LittleEndian);
-        payload.WriteByte(0x05); // Hover ID
+        payload.WriteByte(static_cast<std::uint8_t>(CrtpGenericSetpointId::Hover));
         payload.WriteSingle(vx);
         payload.WriteSingle(vy);
         payload.WriteSingle(yawrate);
         payload.WriteSingle(zdist);
 
         return this->bluetooth_device_->SendAsync(
-            CrtpPort::SetpointGeneric, payload.DetachBuffer());
+            CrtpPort::GenericSetpoint, payload.DetachBuffer());
     }
 
-    IAsyncOperation<bool>
+    IAsyncOperation<CrazyflieStatus>
     Crazyflie::SendCommanderStopPacketAsync()
     {
         DataWriter payload;
         payload.ByteOrder(ByteOrder::LittleEndian);
-        payload.WriteByte(0x00); // Stop ID
+        payload.WriteByte(static_cast<std::uint8_t>(CrtpGenericSetpointId::Stop));
 
         return this->bluetooth_device_->SendAsync(
-            CrtpPort::SetpointGeneric, payload.DetachBuffer());
+            CrtpPort::GenericSetpoint, payload.DetachBuffer());
     }
 }

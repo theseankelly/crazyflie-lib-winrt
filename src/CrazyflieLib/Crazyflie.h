@@ -24,10 +24,12 @@ namespace winrt::bitcraze::crazyflielib::implementation
         Crazyflie(winrt::hstring device_name);
 
         /**
-         * Asynchronously creates connection to this Crazyflie instance.
+         * Asynchronously initializes this Crazyflie instance.
+         *
+         * @return CrazyflieStatus return code
          */
-        IAsyncAction
-        ConnectAsync();
+        IAsyncOperation<CrazyflieStatus>
+        InitializeAsync();
 
         /**
          * Asynchronously sends basic RPYT commander packet
@@ -40,7 +42,7 @@ namespace winrt::bitcraze::crazyflielib::implementation
          *
          * @param thrust Unsigned percent (0,1) to apply on the thrust axis
          */
-        IAsyncOperation<bool>
+        IAsyncOperation<CrazyflieStatus>
         SendCommanderPacketAsync(
             float roll,
             float pitch,
@@ -58,7 +60,7 @@ namespace winrt::bitcraze::crazyflielib::implementation
          *
          * @param thrust Unsigned percent (0,1) to apply on the thrust axis
          */
-        IAsyncOperation<bool>
+        IAsyncOperation<CrazyflieStatus>
         SendCommanderHoverPacketAsync(
             float vx,
             float vy,
@@ -68,7 +70,7 @@ namespace winrt::bitcraze::crazyflielib::implementation
         /**
          * Asynchronously sends stop setpoint packet
          */
-        IAsyncOperation<bool>
+        IAsyncOperation<CrazyflieStatus>
         SendCommanderStopPacketAsync();
 
         /**

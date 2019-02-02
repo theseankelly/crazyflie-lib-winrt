@@ -2,6 +2,8 @@
 #include "pch.h"
 #include "crtp.h"
 
+#include "winrt/bitcraze.crazyflielib.h"
+
 using namespace winrt::Windows::Devices::Bluetooth;
 using namespace winrt::Windows::Devices::Bluetooth::GenericAttributeProfile;
 using namespace winrt::Windows::Foundation;
@@ -44,20 +46,22 @@ namespace winrt::bitcraze::crazyflielib::implementation
          *       Read/Write operations to characteristics must be monitered for
          *       success.
          */
-        IAsyncAction ConnectAsync();
+        IAsyncOperation<CrazyflieStatus> InitializeAsync();
 
-        IAsyncOperation<bool> SendAsync(
+        IAsyncOperation<CrazyflieStatus> SendAsync(
             CrtpPort port_id,
             IBuffer data);
 
     protected:
         winrt::hstring device_name_;
-        std::shared_ptr<BluetoothLEDevice> device_;
 
-        std::shared_ptr<GattDeviceService> crazyflieService_;
-        std::shared_ptr<GattCharacteristic> crtpCharacteristic_;
-        std::shared_ptr<GattCharacteristic> crtpUpCharacteristic_;
-        std::shared_ptr<GattCharacteristic> crtpDownCharacteristic_;
+        // CRTP characteristics
+        std::shared_ptr<GattCharacteristic> crtpCharacteristic_ = nullptr;
+        std::shared_ptr<GattCharacteristic> crtpUpCharacteristic_ = nullptr;
+        std::shared_ptr<GattCharacteristic> crtpDownCharacteristic_ = nullptr;
+
+    private:
+        bool initialized_ = false;
     };
 }
 
