@@ -41,6 +41,8 @@ namespace winrt::bitcraze::crazyflielib::implementation
          * @param yaw Signed percent (-1,1) to apply on the yaw axis
          *
          * @param thrust Unsigned percent (0,1) to apply on the thrust axis
+         *
+         * @return CrazyflieStatus return code
          */
         IAsyncOperation<CrazyflieStatus>
         SendCommanderPacketAsync(
@@ -59,6 +61,8 @@ namespace winrt::bitcraze::crazyflielib::implementation
          * @param yaw Signed percent (-1,1) to apply on the yaw axis
          *
          * @param thrust Unsigned percent (0,1) to apply on the thrust axis
+         *
+         * @return CrazyflieStatus return code
          */
         IAsyncOperation<CrazyflieStatus>
         SendCommanderHoverPacketAsync(
@@ -69,6 +73,8 @@ namespace winrt::bitcraze::crazyflielib::implementation
 
         /**
          * Asynchronously sends stop setpoint packet
+         *
+         * @return CrazyflieStatus return code
          */
         IAsyncOperation<CrazyflieStatus>
         SendCommanderStopPacketAsync();
