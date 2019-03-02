@@ -63,6 +63,28 @@ namespace CrazyflieLibTest
                 Assert.IsTrue(status == CrazyflieStatus.Success);
             }).GetAwaiter().GetResult();
         }
+
+        [TestMethod]
+        public void ReadTest()
+        {
+            IList<string> devices = null;
+            System.Threading.Tasks.Task.Run(async () =>
+            {
+                devices = await Crazyflie.ScanInterfacesAsync();
+                Assert.IsTrue(devices.Count >= 1);
+                Crazyflie c = new Crazyflie(devices[0]);
+                CrazyflieStatus status = await c.InitializeAsync();
+                Assert.IsTrue(status == CrazyflieStatus.Success);
+
+                var count = 0;
+                while(count < 30)
+                {
+                    await Task.Delay(1000);
+                    await c.ReadPacketAsync();
+                    count++;
+                }
+            }).GetAwaiter().GetResult();
+        }
     }
 
     [TestClass]

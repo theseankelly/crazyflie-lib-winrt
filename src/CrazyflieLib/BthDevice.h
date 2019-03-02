@@ -52,6 +52,8 @@ namespace winrt::bitcraze::crazyflielib::implementation
             CrtpPort port_id,
             IBuffer data);
 
+        IAsyncOperation<CrazyflieStatus> ReadAsync();
+
     protected:
         winrt::hstring device_name_;
 
@@ -62,6 +64,12 @@ namespace winrt::bitcraze::crazyflielib::implementation
 
     private:
         bool initialized_ = false;
+
+        std::uint8_t send_pid_ = 0;
+
+        void OnCharacteristicChanged(
+            Windows::Devices::Bluetooth::GenericAttributeProfile::GattCharacteristic sender,
+            Windows::Devices::Bluetooth::GenericAttributeProfile::GattValueChangedEventArgs args);
     };
 }
 

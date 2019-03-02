@@ -157,6 +157,26 @@ namespace winrt::bitcraze::crazyflielib::implementation
             co_return CrazyflieStatus::BthServiceNotFound;
         }
 
+        // Want to register for notify
+        if ((this->crtpDownCharacteristic_->CharacteristicProperties() &
+            GattCharacteristicProperties::Notify) == GattCharacteristicProperties::Notify)
+        {
+            GattCommunicationStatus status =
+                co_await this->crtpDownCharacteristic_->WriteClientCharacteristicConfigurationDescriptorAsync(
+                    GattClientCharacteristicConfigurationDescriptorValue::Notify);
+            if (status != GattCommunicationStatus::Success)
+            {
+                co_return CrazyflieStatus::DeviceUnreachable;
+            }
+
+            this->crtpCharacteristic_->ValueChanged(
+                {this, &BthDevice::OnCharacteristicChanged});
+        }
+        else
+        {
+            co_return CrazyflieStatus::BthDeviceDescriptorError;
+        }
+
         // If we got this far, initialization was a success.
         this->initialized_ = true;
         return CrazyflieStatus::Success;
@@ -167,22 +187,77 @@ namespace winrt::bitcraze::crazyflielib::implementation
         CrtpPort port_id,
         IBuffer data)
     {
+        // TODO -- implement packets > 19 bytes.
+        if (data.Length() > 19)
+        {
+            co_return CrazyflieStatus::Failure;
+        }
+
         DataWriter packet;
-        CrtpHeader hdr =
+        CrtpHeader hdr
         {
             0,
             0,
             static_cast<std::uint8_t>(port_id)
         };
 
+        CrtpUpDownCtrl ctrl
+        {
+            data.Length(),
+            this->send_pid_,
+            1
+        };
+
+        packet.WriteByte(ctrl.as_byte);
         packet.WriteByte(hdr.as_byte);
         packet.WriteBuffer(data);
 
-        auto res = co_await this->crtpCharacteristic_->WriteValueAsync(
+        auto res = co_await this->crtpUpCharacteristic_->WriteValueAsync(
             packet.DetachBuffer(),
             GattWriteOption::WriteWithResponse);
 
         return (res == GattCommunicationStatus::Success) ?
             CrazyflieStatus::Success : CrazyflieStatus::DeviceUnreachable;
+    }
+
+    IAsyncOperation<CrazyflieStatus>
+    BthDevice::ReadAsync()
+    {
+        auto res = co_await this->crtpCharacteristic_->ReadValueAsync();
+
+        if (res.Status() == GattCommunicationStatus::Success)
+        {
+            auto buf = DataReader::FromBuffer(res.Value());
+            buf.ByteOrder(ByteOrder::LittleEndian);
+
+            std::uint8_t header = 0xFE;
+            std::uint8_t crtp_header = 0xFE;
+
+            std::uint32_t len = buf.UnconsumedBufferLength();
+
+            if (len > 0)
+            {
+                header = buf.ReadByte();
+            }
+            if (len > 1)
+            {
+                crtp_header = buf.ReadByte();
+            }
+
+            return CrazyflieStatus::Success;
+        }
+        else
+        {
+            return CrazyflieStatus::DeviceUnreachable;
+        }
+    }
+
+    void
+    BthDevice::OnCharacteristicChanged(
+        GattCharacteristic sender,
+        GattValueChangedEventArgs args)
+    {
+        auto reader = DataReader::FromBuffer(args.CharacteristicValue());
+        std::uint32_t len = reader.UnconsumedBufferLength();
     }
 }

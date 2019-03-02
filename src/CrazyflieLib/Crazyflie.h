@@ -79,6 +79,9 @@ namespace winrt::bitcraze::crazyflielib::implementation
         IAsyncOperation<CrazyflieStatus>
         SendCommanderStopPacketAsync();
 
+        IAsyncOperation<CrazyflieStatus>
+        ReadPacketAsync();
+
         /**
          * Asynchronously scans all supported interfaces for
          * available Crazyflie devices.

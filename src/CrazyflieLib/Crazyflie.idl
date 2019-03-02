@@ -8,7 +8,18 @@ namespace bitcraze.crazyflielib
         InvalidDeviceId           = 3,
         BthServiceNotFound        = 4,
         BthCharacteristicNotFound = 5,
+        BthDeviceDescriptorError  = 6,
     };
+
+    // Goal: design how to interact with this class and the various CRTP blocks.
+    //
+    // Simple approach: Big list of functions. This is not partitioned out nicely.
+    //
+    // Class for each port (Commander, etc)
+    //  - what does creating these objects look like?
+    //  - I would want to still do what we do, but have Crazyflie.Commander.SendPacket(), etc
+    //      - It doesn't make sense to expose this as a proper class, because we don't want to encourage instantiation
+    //      - Subclass with private ctor?
 
     [default_interface]
     runtimeclass Crazyflie
@@ -51,6 +62,9 @@ namespace bitcraze.crazyflielib
         Windows.Foundation.IAsyncOperation<CrazyflieStatus>
         SendCommanderStopPacketAsync();
 
+        Windows.Foundation.IAsyncOperation<CrazyflieStatus>
+        ReadPacketAsync();
+
         //
         // Summary:
         //      Asynchronously searches for Crazyflie devices across all
@@ -59,6 +73,4 @@ namespace bitcraze.crazyflielib
             Windows.Foundation.Collections.IVector<String> >
             ScanInterfacesAsync();
     };
-
 }
-

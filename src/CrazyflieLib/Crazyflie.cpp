@@ -24,7 +24,18 @@ namespace winrt::bitcraze::crazyflielib::implementation
         this->bluetooth_device_ =
             std::make_shared<BthDevice>(this->device_name_);
 
-        return this->bluetooth_device_->InitializeAsync();
+        auto res = co_await this->bluetooth_device_->InitializeAsync();
+        if (res != CrazyflieStatus::Success)
+        {
+            return res;
+        }
+
+        // HACK
+        DataWriter payload;
+        payload.ByteOrder(ByteOrder::LittleEndian);
+        payload.WriteByte(1);
+
+        return co_await this->bluetooth_device_->SendAsync(CrtpPort::Log, payload.DetachBuffer());
     }
 
     IAsyncOperation<CrazyflieStatus>
@@ -90,6 +101,12 @@ namespace winrt::bitcraze::crazyflielib::implementation
 
         return this->bluetooth_device_->SendAsync(
             CrtpPort::GenericSetpoint, payload.DetachBuffer());
+    }
+
+    IAsyncOperation<CrazyflieStatus>
+    Crazyflie::ReadPacketAsync()
+    {
+        return this->bluetooth_device_->ReadAsync();
     }
 
     IAsyncOperation<CrazyflieStatus>
